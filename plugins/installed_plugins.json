@@ -1,0 +1,146 @@
+{
+  "version": 2,
+  "plugins": {
+    "code-refactoring@claude-code-workflows": [
+      {
+        "scope": "user",
+        "installPath": "C:\\Users\\castr\\.claude\\plugins\\cache\\claude-code-workflows\\code-refactoring\\1.2.0",
+        "version": "1.2.0",
+        "installedAt": "2026-04-16T15:19:07.231Z",
+        "lastUpdated": "2026-04-16T15:19:07.231Z",
+        "gitCommitSha": "ddb61351ee9fdda90904799d7f3978a8bdb8b1bc"
+      }
+    ],
+    "security-guidance@claude-code-plugins": [
+      {
+        "scope": "user",
+        "installPath": "C:\\Users\\castr\\.claude\\plugins\\cache\\claude-code-plugins\\security-guidance\\1.0.0",
+        "version": "1.0.0",
+        "installedAt": "2026-04-16T15:19:07.231Z",
+        "lastUpdated": "2026-04-16T15:19:07.231Z",
+        "gitCommitSha": "5a7bf281bab3a1bf37245ea84000b4936322eefa"
+      }
+    ],
+    "javascript-typescript@claude-code-workflows": [
+      {
+        "scope": "user",
+        "installPath": "C:\\Users\\castr\\.claude\\plugins\\cache\\claude-code-workflows\\javascript-typescript\\1.2.2",
+        "version": "1.2.2",
+        "installedAt": "2026-04-16T15:19:07.231Z",
+        "lastUpdated": "2026-04-16T15:19:07.231Z",
+        "gitCommitSha": "ddb61351ee9fdda90904799d7f3978a8bdb8b1bc"
+      }
+    ],
+    "context7@claude-plugins-official": [
+      {
+        "scope": "user",
+        "installPath": "C:\\Users\\castr\\.claude\\plugins\\cache\\claude-plugins-official\\context7\\unknown",
+        "version": "unknown",
+        "installedAt": "2026-04-16T15:22:01.787Z",
+        "lastUpdated": "2026-04-17T13:38:27.355Z",
+        "gitCommitSha": "48aa43517886014e90ee80a6461f9de75045369d"
+      }
+    ],
+    "frontend-design@claude-plugins-official": [
+      {
+        "scope": "local",
+        "projectPath": "c:\\Users\\castr\\Builds\\learning-hub",
+        "installPath": "C:\\Users\\castr\\.claude\\plugins\\cache\\claude-plugins-official\\frontend-design\\unknown",
+        "version": "unknown",
+        "installedAt": "2026-04-16T15:22:27.969Z",
+        "lastUpdated": "2026-04-17T13:46:55.276Z"
+      }
+    ],
+    "superpowers@claude-plugins-official": [
+      {
+        "scope": "local",
+        "projectPath": "c:\\Users\\castr\\.claude",
+        "installPath": "C:\\Users\\castr\\.claude\\plugins\\cache\\claude-plugins-official\\superpowers\\5.0.7",
+        "version": "5.0.7",
+        "installedAt": "2026-04-16T15:24:00.346Z",
+        "lastUpdated": "2026-04-16T15:24:00.346Z",
+        "gitCommitSha": "c4bbe651cb1bc5e7bec6f7effae2b946571f3258"
+      }
+    ],
+    "code-review@claude-plugins-official": [
+      {
+        "scope": "local",
+        "projectPath": "c:\\Users\\castr\\.claude",
+        "installPath": "C:\\Users\\castr\\.claude\\plugins\\cache\\claude-plugins-official\\code-review\\48aa43517886",
+        "version": "48aa43517886",
+        "installedAt": "2026-04-16T15:24:08.456Z",
+        "lastUpdated": "2026-04-16T15:27:50.955Z"
+      }
+    ],
+    "playwright@claude-plugins-official": [
+      {
+        "scope": "local",
+        "projectPath": "c:\\Users\\castr\\.claude",
+        "installPath": "C:\\Users\\castr\\.claude\\plugins\\cache\\claude-plugins-official\\playwright\\48aa43517886",
+        "version": "48aa43517886",
+        "installedAt": "2026-04-16T15:24:16.600Z",
+        "lastUpdated": "2026-04-16T15:27:50.939Z"
+      }
+    ],
+    "skill-creator@claude-plugins-official": [
+      {
+        "scope": "local",
+        "projectPath": "c:\\Users\\castr\\.claude",
+        "installPath": "C:\\Users\\castr\\.claude\\plugins\\cache\\claude-plugins-official\\skill-creator\\48aa43517886",
+        "version": "48aa43517886",
+        "installedAt": "2026-04-16T15:24:19.893Z",
+        "lastUpdated": "2026-04-16T15:27:50.971Z"
+      }
+    ],
+    "security-guidance@claude-plugins-official": [
+      {
+        "scope": "local",
+        "projectPath": "c:\\Users\\castr\\.claude",
+        "installPath": "C:\\Users\\castr\\.claude\\plugins\\cache\\claude-plugins-official\\security-guidance\\48aa43517886",
+        "version": "48aa43517886",
+        "installedAt": "2026-04-16T15:24:28.519Z",
+        "lastUpdated": "2026-04-16T15:27:50.963Z"
+      }
+    ],
+    "supabase@claude-plugins-official": [
+      {
+        "scope": "local",
+        "projectPath": "c:\\Users\\castr\\.claude",
+        "installPath": "C:\\Users\\castr\\.claude\\plugins\\cache\\claude-plugins-official\\supabase\\48aa43517886",
+        "version": "48aa43517886",
+        "installedAt": "2026-04-16T15:24:41.723Z",
+        "lastUpdated": "2026-04-16T15:27:50.947Z"
+      }
+    ],
+    "code-simplifier@claude-plugins-official": [
+      {
+        "scope": "local",
+        "projectPath": "C:\\Users\\castr",
+        "installPath": "C:\\Users\\castr\\.claude\\plugins\\cache\\claude-plugins-official\\code-simplifier\\1.0.0",
+        "version": "1.0.0",
+        "installedAt": "2026-04-19T15:15:44.968Z",
+        "lastUpdated": "2026-04-19T15:15:44.968Z"
+      }
+    ],
+    "claude-md-management@claude-plugins-official": [
+      {
+        "scope": "local",
+        "projectPath": "C:\\Users\\castr",
+        "installPath": "C:\\Users\\castr\\.claude\\plugins\\cache\\claude-plugins-official\\claude-md-management\\1.0.0",
+        "version": "1.0.0",
+        "installedAt": "2026-04-19T15:15:56.308Z",
+        "lastUpdated": "2026-04-19T15:15:56.308Z"
+      }
+    ],
+    "typescript-lsp@claude-plugins-official": [
+      {
+        "scope": "local",
+        "installPath": "C:\\Users\\castr\\.claude\\plugins\\cache\\claude-plugins-official\\typescript-lsp\\1.0.0",
+        "version": "1.0.0",
+        "installedAt": "2026-04-19T15:16:05.093Z",
+        "lastUpdated": "2026-04-19T15:16:05.093Z",
+        "projectPath": "C:\\Users\\castr"
+      }
+    ]
+  }
+}
