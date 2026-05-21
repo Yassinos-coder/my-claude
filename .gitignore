@@ -17,3 +17,6 @@ telemetry/
 todos/
 settings.local.json
 plugins/
+.credentials.json
+.last-cleanup
+.mcp.json
