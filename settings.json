@@ -296,7 +296,8 @@
       "Bash(ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 ec2-aws \"echo connected\")",
       "Bash(Test-Path \"C:\\\\Users\\\\castr\\\\my-moodle-ec2-key.pem\")",
       "Bash(ssh -F NUL -i /c/Users/castr/my-moodle-ec2-key.pem -o IdentitiesOnly=yes -o StrictHostKeyChecking=no ec2-user@51.44.61.246 \"cd ~/moodle-ai-assistant && git remote prune origin && git gc --prune=now && git fetch origin && git reset --hard origin/main && cd backend && docker-compose build backend && docker rm -f moodle-ai-backend 2>/dev/null; docker-compose up -d backend\")",
-      "Bash(bash -c 'ssh -i \"/c/Users/castr/my-moodle-ec2-key.pem\" -o IdentitiesOnly=yes -o StrictHostKeyChecking=no ec2-user@51.44.61.246 \"cd ~/moodle-ai-assistant && git remote prune origin && git gc --prune=now && git fetch origin && git reset --hard origin/main && cd backend && docker-compose build backend && docker rm -f moodle-ai-backend 2>/dev/null; docker-compose up -d backend\"')"
+      "Bash(bash -c 'ssh -i \"/c/Users/castr/my-moodle-ec2-key.pem\" -o IdentitiesOnly=yes -o StrictHostKeyChecking=no ec2-user@51.44.61.246 \"cd ~/moodle-ai-assistant && git remote prune origin && git gc --prune=now && git fetch origin && git reset --hard origin/main && cd backend && docker-compose build backend && docker rm -f moodle-ai-backend 2>/dev/null; docker-compose up -d backend\"')",
+      "Bash(git branch *)"
     ],
     "additionalDirectories": [
       "C:\\Users\\castr\\.ssh\\agent",
