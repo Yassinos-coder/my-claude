@@ -20,3 +20,5 @@ plugins/
 .credentials.json
 .last-cleanup
 .mcp.json
+security/
+remote-settings.json

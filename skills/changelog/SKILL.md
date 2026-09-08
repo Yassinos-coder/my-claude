@@ -34,6 +34,15 @@ Look for a version in this order:
 
 If no version is found anywhere, start at `0.1.0`.
 
+**A scaffold-default version is not a real version.** If `package.json` says `0.0.0`, that is almost always the untouched Vite/npm default rather than a deliberate choice. Treat it as "no version found" and say so in your report — do not silently emit `0.0.0` into a release, and do not assume the project intends to stay there.
+
+**If the existing `CHANGELOG.md` uses `[Unreleased]` headings instead of `[x.y.z]`,** do not simply follow that convention and skip versioning. `[Unreleased]` means "not yet released" — the moment you are cutting a release, it needs a real number. Resolve it explicitly:
+
+- If the user is releasing/deploying, replace the topmost `[Unreleased]` with the new version and today's date.
+- If you genuinely cannot infer the right starting number, **ask** — check `git tag`, the branch name (a `v2` branch implies a `2.x` line), and any deploy config before you do.
+
+Never let a changelog and a `package.json` version disagree without flagging it.
+
 ## Step 3 — Determine the version bump
 
 Analyze the changes and apply semver rules:
@@ -95,9 +104,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ...
 ```
 
-## Step 7 — Update the version source
+## Step 7 — Update the version source (required, not optional)
 
-If `package.json` exists, update the `version` field to the new version. Do the same for `pyproject.toml` or `Cargo.toml` if that's where the version came from.
+**This step is mandatory whenever you write a changelog entry.** Bumping `CHANGELOG.md` without bumping the version source leaves the two out of sync, which is worse than doing neither — the app then reports a stale version to users.
+
+If `package.json` exists, update its `version` field to the new version. Do the same for `pyproject.toml` or `Cargo.toml` if that's where the version came from. If several of these exist, update **all** of them so they agree.
+
+Then verify it actually took effect:
+
+```bash
+grep -m1 '"version"' package.json
+```
+
+**Do not skip this because the project "doesn't seem to use semver."** A project that ships a version string to users — in a UI, an API response, a build manifest, an update prompt, a `--version` flag — is using it whether or not the changelog looks like semver. Grep before assuming it's unused:
+
+```bash
+grep -rn "version" --include=*.config.* --include=*.json . | grep -i "pkg\.\|package.json"
+```
 
 Do **not** commit anything — just write the files and let the user review.
 
@@ -106,4 +129,5 @@ Do **not** commit anything — just write the files and let the user review.
 Tell the user:
 - What version bump was applied and why (one sentence)
 - Which categories had entries
-- That `CHANGELOG.md` and the version file have been updated
+- That `CHANGELOG.md` **and** the version file have been updated — state the old → new version explicitly (e.g. `0.0.0 → 2.0.0`)
+- Anything you could not resolve and had to guess at, so they can correct it before release

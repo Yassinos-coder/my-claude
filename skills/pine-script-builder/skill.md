@@ -1,11 +1,11 @@
 ---
 name: pine-script-builder
-description: Build TradingView Pine Script indicators and strategies. Use this skill whenever the user asks to create, build, write, or code a TradingView indicator, strategy, script, or Pine Script file — even if they just describe a trading concept or say "make me an indicator for X". Handles everything from simple overlays to multi-timeframe SMC strategies with dashboards.
+description: Build TradingView Pine Script v6 indicators and strategies. Use this skill whenever the user asks to create, build, write, or code a TradingView indicator, strategy, script, or Pine Script file — even if they just describe a trading concept or say "make me an indicator for X". Handles everything from simple overlays to multi-timeframe SMC strategies with dashboards. Always writes //@version=6.
 ---
 
 # Pine Script Builder Skill
 
-Build production-quality Pine Script v5/v6 indicators and strategies for TradingView, following the conventions, patterns, and templates from this repository.
+Build production-quality Pine Script v6 indicators and strategies for TradingView, following the conventions, patterns, and templates from this repository.
 
 ## Repo Reference Map
 
@@ -30,6 +30,8 @@ Before writing any code, know where to look:
 | Session H/L tracking | `indicators/session-high-low-indicator.pine` |
 | S/R zones with arrays | `indicators/support-resistance-zones.pine` |
 | Pivot + market structure | `indicators/market-structure-tool.pine` |
+| BOS/CHoCH with fractal type + os state | `indicators/Market Structure CHoCH/BOS (Fractal) [LuxAlgo].pine` |
+| BOS/CHoCH + daily levels (production) | `indicators/market-structure-bos-choch-daily-levels.pine` |
 | Liquidity sweeps | `indicators/liquidity-sweep-detector.pine` |
 | SMC order blocks + FVG | `indicators/smart-money-concepts.pine` |
 | Multi-TF trend table | `indicators/mtf-trend-dashboard.pine` |
@@ -107,7 +109,7 @@ Confirm the plan with the user if the script is complex (SMC, MTF, dashboard-hea
 ### File structure (always follow this order)
 
 ```pine
-//@version=5
+//@version=6
 // ═══════════════════════════════════════════════════════════════════
 // SCRIPT NAME
 // Description: one-line summary
@@ -269,33 +271,114 @@ plot(rsiValue, color=momentumColor, linewidth=2)
 
 ---
 
-## Step 5 — Array Management (for dynamic objects)
+## Step 5 — User-Defined Types (Pine v6)
+
+Use `type` to group related state — cleaner than parallel `var` variables. Mandatory for any indicator that tracks swing/fractal state.
+
+```pine
+// LuxAlgo pattern — store one active swing level as a typed object
+type fractal
+    float value
+    int   loc
+    bool  iscrossed
+
+var upper = fractal.new(na, na, true)
+var lower = fractal.new(na, na, true)
+
+// Update when a new swing forms
+if isSwingHigh
+    upper.value     := swingHighPrice
+    upper.loc       := swingHighBar
+    upper.iscrossed := false
+
+// Check cross unconditionally, then gate
+crossedAbove = ta.crossover(close, upper.value)   // must be top-level, not inside if
+bullBreak    = crossedAbove and not upper.iscrossed and not na(upper.value)
+
+if bullBreak
+    upper.iscrossed := true   // prevents same fractal firing twice
+```
+
+**`os` order-state variable** — the correct way to distinguish BOS from CHoCH:
+
+```pine
+var int os = 0  // 0=neutral, 1=last break bullish, -1=last break bearish
+
+isBullBOS   = bullBreak and os >= 0   // continuation or first break
+isBullCHoCH = bullBreak and os == -1  // reversal from bearish trend
+isBearBOS   = bearBreak and os <= 0
+isBearCHoCH = bearBreak and os == 1
+
+if bullBreak
+    os := 1
+if bearBreak
+    os := -1
+```
+
+---
+
+## Step 6 — Structure / BOS / CHoCH Lines (LuxAlgo pattern)
+
+**All structure lines must be strictly horizontal.** Never draw a line from one swing price to a different swing price — it will slope into a wick.
+
+### BOS / CHoCH line (horizontal, from fractal to break bar)
+```pine
+// Capture fractal coords BEFORE updating state
+float capVal = upper.value
+int   capLoc = upper.loc
+
+// Draw: both y values identical → guaranteed flat line
+line.new(capLoc, capVal, bar_index, capVal, color = bullColor, width = 1)
+```
+
+### Label — centered on the line, transparent background
+```pine
+// Place at midpoint of the line, not at the break bar
+// Transparent bg + colored text = clean LuxAlgo look
+label.new(int(math.avg(bar_index, capLoc)), capVal, "BOS",
+     style     = label.style_label_down,
+     color     = color.new(color.white, 100),  // fully transparent bg
+     textcolor = bullColor,
+     size      = size.tiny)
+```
+
+### No diagonal connecting lines
+Never draw lines connecting consecutive swing highs to consecutive swing lows (or vice versa). They always slope toward a wick and look wrong. Use labels (HH/LH/HL/LL) + horizontal S/R level lines to convey structure instead.
+
+---
+
+## Step 7 — Array Management (for dynamic objects)
 
 When storing multiple levels, boxes, or lines, always cap array size to avoid TradingView object limits.
 
 ```pine
-// Pattern from indicators/support-resistance-zones.pine
-var float[] levels  = array.new_float()
-var line[]  lvlLines = array.new_line()
+// v6 generic syntax — use array.new<type>() not array.new_float() etc.
+var float[] levels   = array.new<float>()
+var line[]  lvlLines = array.new<line>()
 
 MAX_LEVELS = 50
 
-// Add new level
-if newLevel
-    array.push(levels,   newValue)
-    array.push(lvlLines, line.new(...))
+// Guard the loop: use math.min of both array sizes to prevent out-of-bounds
+// if arrays ever diverge (e.g. line.new() failed before push)
+int sz = math.min(array.size(levels), array.size(lvlLines))
+if sz > 0
+    for i = 0 to sz - 1
+        // safe to access both arrays at index i
+        ...
 
 // Trim oldest when over limit
 while array.size(levels) > MAX_LEVELS
-    line.delete(array.shift(lvlLines))
-    array.shift(levels)
+    array.pop(levels)
+while array.size(lvlLines) > MAX_LEVELS
+    ln = array.pop(lvlLines)
+    line.delete(ln)
 ```
 
 Object limits per script: 500 lines, 500 boxes, 500 labels. Budget accordingly.
 
 ---
 
-## Step 6 — Strategy-Specific Patterns
+## Step 8 — Strategy-Specific Patterns
 
 ### Declaration
 ```pine
@@ -346,7 +429,7 @@ if longSignal and not tradingDisabled
 
 ---
 
-## Step 7 — Anti-Repaint Rules
+## Step 9 — Anti-Repaint Rules
 
 From `examples/tutorials/03_no-repaint_tips_and_tricks.md`:
 
@@ -355,6 +438,16 @@ From `examples/tutorials/03_no-repaint_tips_and_tricks.md`:
 3. **Pivots lag by design** — `ta.pivothigh(len)` only resolves `len` bars ago; don't treat it as current
 4. **Don't signal on open** — use previous bar's value: `signal = condition[1]`
 5. **Test with bar replay** — enable in TradingView to verify no future painting
+6. **CW10002 — `ta.crossover` / `ta.crossunder` must be top-level** — never call them inside a conditional expression. Assign to a variable unconditionally, then gate:
+
+```pine
+// WRONG — triggers CW10002 in v6
+breakAbove = condition and ta.crossover(close, level)
+
+// CORRECT — evaluate unconditionally, gate separately
+crossed    = ta.crossover(close, level)   // top-level, runs every bar
+breakAbove = condition and crossed
+```
 
 ```pine
 // Safe pattern — only acts on confirmed closed bar
@@ -365,7 +458,7 @@ if barstate.isconfirmed and longSignal
 
 ---
 
-## Step 8 — Alerts
+## Step 10 — Alerts
 
 ### Simple alerts (from `examples/snippets/alerts/basic-alert-condition.pine`)
 ```pine
@@ -386,21 +479,27 @@ alertcondition(bullSignal, "Bull Webhook", message=f_buildWebhookMessage("long",
 
 ---
 
-## Step 9 — Style Checklist
+## Step 11 — Style Checklist
 
 From `docs/pine-style-guide.md`:
 
-- [ ] `//@version=5` on line 1
+- [ ] `//@version=6` on line 1
 - [ ] Explicit `overlay=true/false` in declaration
 - [ ] All inputs grouped with `input.group()`
 - [ ] No bare magic numbers — name every constant
 - [ ] `request.security()` always uses `lookahead=barmerge.lookahead_off`
 - [ ] Division guarded: `denominator != 0 ? numerator / denominator : na`
 - [ ] Objects cleaned up: `label.delete()`, `line.delete()`, `box.delete()` before recreating
-- [ ] Array sizes capped with while-trim loops
+- [ ] Array sizes capped with while-trim loops using `array.new<type>()` (not `array.new_float()`)
+- [ ] Array loops guarded: `int sz = math.min(array.size(a), array.size(b))` + `if sz > 0`
 - [ ] `barstate.islast` wraps table updates (table only needs update on last bar)
 - [ ] Descriptive `plot()` titles (shown in legend and data window)
 - [ ] `color.new(color.X, transparency)` — never bare color constants without transparency where fill is needed
+- [ ] `ta.crossover` / `ta.crossunder` assigned to a top-level variable — never inside a conditional (CW10002)
+- [ ] Multi-line switch used instead of chained ternary with trailing `:` (v6 parser error)
+- [ ] Structure lines: both `y1` and `y2` set to the same value — no diagonal lines that slope into wicks
+- [ ] BOS/CHoCH labels: centered on the line at `int(math.avg(breakBar, fractalBar))`, transparent background
+- [ ] Use `type` for any indicator tracking swing/fractal state — no parallel `var` variable pairs
 
 ---
 
