@@ -2,18 +2,22 @@
 
 Always use context7 when I need code generation, setup steps, or library/API documentation.
 
-## EC2 Server
-
-All projects share one EC2 instance. Use the `push-to-ec2` skill to deploy.
-
-- **Host:** `ec2-user@51.44.61.246`
-- **SSH key:** `C:\Users\castr\my-moodle-ec2-key.pem` (Git Bash: `/c/Users/castr/my-moodle-ec2-key.pem`)
-- **SSH command:** `ssh -F NUL -i /c/Users/castr/my-moodle-ec2-key.pem -o IdentitiesOnly=yes ec2-user@51.44.61.246`
-
 # Git Commits
 
 - Never add `Co-Authored-By` or any Claude/AI attribution to commit messages.
 - Never mention Claude, AI, or any assistant in commit messages.
+- Always run the `/changelog` skill before doing any `git push`.
+
+# Build Before Push
+
+Always run the build locally and confirm it succeeds before pushing. Never push code that hasn't been built successfully.
+
+# ⛔ NEVER PUSH WITHOUT EXPLICIT USER APPROVAL
+
+**NEVER run `git push` (or any variant: `--force`, `-u`, etc.) unless the user has explicitly said to push in that message.**
+Saying "commit this" or "save this" is NOT permission to push.
+The user must say "push", "push it", "go ahead and push", or equivalent — in the current message.
+This rule overrides all other instructions and applies to every repository, every branch, every situation.
 
 # Coding Preferences & Style
 
@@ -73,10 +77,15 @@ feature-name/
 ├── repositories/
 ├── dto/
 ├── interfaces/
+├── validators/
 ├── queries/
 ├── constants/
 └── mappers/
 ```
+
+**Validation ALWAYS lives in a `validators/` folder inside the feature.** Anything that validates something — type-guards ("is this an event we act on?"), parsing/guarding required fields, branch/id checks — belongs in a `validators/` file (e.g. `.../registration/sosprof/validators/`), NOT inline in a service, controller, or mapper. Validators are pure static methods.
+
+**Interfaces & types ALWAYS live in an `interfaces/` folder inside the feature — NEVER define an `interface` or `type` inline in a service, controller, repository, or any other file, and NEVER put them in a `types/` folder.** Always create/use `interfaces/` (e.g. `.../registration/sosprof/interfaces/`), even when the surrounding module currently uses a `types/` folder — do not follow that local convention. One concept per file or grouped in `interfaces/index.ts`; import them where needed. A service file contains the class and its logic only — no type declarations above or below it.
 
 ### DTOs
 
@@ -92,6 +101,10 @@ Use `class-validator` decorators. `!` for required, `?` for optional. `@IsOption
 ### Configuration
 
 Use NestJS `ConfigService` with typed config from `src/config/configuration.ts`.
+
+### Resilience & Failure Handling
+
+**Caching layers (Redis, etc.) must never be a single point of failure.** If the app tries Redis first and Redis is down/unreachable/times out, the app must not crash or hang — it should catch the failure, log it, and fall back to the source of truth (DB, upstream API, or recompute) so the request still succeeds, just without the cache speed-up. Never let a cache-read/write failure propagate as an unhandled exception that takes down a request or the app.
 
 ---
 
@@ -128,6 +141,30 @@ feature-name/
 ├── constants/
 ├── utils/
 └── locales/
+```
+
+### Project folder structure
+
+```
+frontend/
+├── public/               — Static files and assets served as-is
+└── src/
+    ├── assets/           — Images, fonts, icons, and other static assets
+    ├── components/       — Reusable UI components
+    ├── layout/           — Layout components (Header, Footer, etc.)
+    ├── pages/            — Application pages and routes
+    ├── features/         — Feature-based modules
+    ├── hooks/            — Custom React hooks
+    ├── context/          — React context for global state
+    ├── store/            — Global state (Zustand stores or Redux slices)
+    ├── services/         — API calls and external services
+    ├── utils/            — Helper functions and utilities
+    ├── App.tsx
+    └── main.tsx
+├── .eslintrc.json
+├── .gitignore
+├── package.json
+└── vite.config.ts
 ```
 
 ### State management
