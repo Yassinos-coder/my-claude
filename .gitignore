@@ -22,3 +22,4 @@ plugins/
 .mcp.json
 security/
 remote-settings.json
+mcp-servers/
