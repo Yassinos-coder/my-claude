@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2026-10-13
+
+### Added
+- `claude-red` skill pack (SnailSploit/claude-red) of offensive-security skills, installed under `skills/claude-red` to audit our own code for vulnerabilities and derive defenses after an application is built
+
+### Changed
+- Refreshed synced built-in skills and expanded the settings.json permission allowlist
+
 ## [0.2.0] - 2026-09-27
 
 ### Added
