@@ -6,7 +6,6 @@ Connect to any remote server using the appropriate authentication method. The us
 
 | Nickname | User | Host | Auth Method | Key / Notes |
 |----------|------|------|-------------|-------------|
-| ec2 | ec2-user | 51.44.61.246 | PEM key | `C:/Users/castr/my-moodle-ec2-key.pem` |
 
 ---
 

@@ -8,10 +8,10 @@ description: Deploy the current project to the EC2 server by SSHing in, pulling 
 ## SSH credentials
 
 ```
-ssh -F NUL -i "C:\Users\castr\my-moodle-ec2-key.pem" -o IdentitiesOnly=yes ec2-user@51.44.61.246
+ssh -F NUL -i "<EC2_KEY_PATH>" -o IdentitiesOnly=yes ec2-user@<EC2_HOST>
 ```
 
-On Windows (Git Bash / WSL), the key path maps to `/c/Users/castr/my-moodle-ec2-key.pem`.
+On Windows (Git Bash / WSL), the key path maps to `<EC2_KEY_PATH>`.
 
 ---
 
@@ -26,7 +26,7 @@ Check if `PUSH_INSTRUCTIONS.md` exists in the current project root.
 Probe the EC2 instance to find where this project lives:
 
 ```bash
-ssh -F NUL -i /c/Users/castr/my-moodle-ec2-key.pem -o IdentitiesOnly=yes ec2-user@51.44.61.246 \
+ssh -F NUL -i <EC2_KEY_PATH> -o IdentitiesOnly=yes ec2-user@<EC2_HOST> \
   "find /home/ec2-user /var/www /opt /srv /app -maxdepth 5 -name '.git' -type d 2>/dev/null | head -30"
 ```
 
@@ -65,7 +65,7 @@ Ask the user for a commit message if it's not obvious from context. Skip this st
 Run the pull and restart in a single SSH session:
 
 ```bash
-ssh -F NUL -i /c/Users/castr/my-moodle-ec2-key.pem -o IdentitiesOnly=yes ec2-user@51.44.61.246 "
+ssh -F NUL -i <EC2_KEY_PATH> -o IdentitiesOnly=yes ec2-user@<EC2_HOST> "
   set -e
   cd <remote-project-path>
   git pull
@@ -92,7 +92,7 @@ If there's a build step (e.g. `npm run build`, `composer install`, `pip install 
 After restart, confirm the services came up:
 
 ```bash
-ssh -F NUL -i /c/Users/castr/my-moodle-ec2-key.pem -o IdentitiesOnly=yes ec2-user@51.44.61.246 "
+ssh -F NUL -i <EC2_KEY_PATH> -o IdentitiesOnly=yes ec2-user@<EC2_HOST> "
   cd <remote-project-path>
   <status-command>
 "
@@ -123,7 +123,7 @@ Create this file on first run. It is the persistent record of this project's dep
 ## Manual deploy (if the skill isn't available)
 
 ```bash
-ssh -F NUL -i "C:\Users\castr\my-moodle-ec2-key.pem" -o IdentitiesOnly=yes ec2-user@51.44.61.246
+ssh -F NUL -i "<EC2_KEY_PATH>" -o IdentitiesOnly=yes ec2-user@<EC2_HOST>
 cd /home/ec2-user/<project-name>
 git pull
 <build-step-if-any>
@@ -144,7 +144,7 @@ echo "PUSH_INSTRUCTIONS.md" >> .gitignore
 ## Edge cases
 
 - **Project not found on EC2:** Tell the user the repo wasn't found, list the git dirs that were found, and ask how to proceed (maybe they need to clone it first).
-- **SSH key missing:** Alert if `/c/Users/castr/my-moodle-ec2-key.pem` is not found. The key must not have broad permissions — if SSH complains, remind the user to run `chmod 400` on the key (or on WSL, use a copy stored there).
+- **SSH key missing:** Alert if `<EC2_KEY_PATH>` is not found. The key must not have broad permissions — if SSH complains, remind the user to run `chmod 400` on the key (or on WSL, use a copy stored there).
 - **Git pull fails (conflicts):** Surface the error, ask the user whether to stash remote changes or reset to the pushed branch.
 - **Service restart fails:** Print the error output in full so the user can diagnose (logs, config issues, port conflicts).
 - **No git remote:** Skip Step 2 entirely — just SSH in and trigger whatever manual deploy mechanism is in `PUSH_INSTRUCTIONS.md`.

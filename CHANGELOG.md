@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2026-10-15
+
+### Added
+- 148 third-party skills from `coreyhaines31/marketingskills`, `wondelai/skills`, `anthropics/skills` and `alexdcd/Mafia-Claude-Skills` (marketing, CRO, SEO, business and engineering frameworks, document and PDF tooling, browser automation, prompt and research tools), reviewed for network calls, credential access, hidden characters and prompt injection before install
+- Ignore rules for private keys, `.env` files, certificates and local history so secrets cannot be committed
+
+### Changed
+- Removed the auto-approved `npx agent-browser` tool permission from the `agent-browser` skill so its commands prompt before running
+
+### Security
+- Removed the old EC2 host address, username and key path from `commands/ssh.md` and `skills/push-to-ec2`, replaced with placeholders (the server no longer exists)
+
 ## [0.3.1] - 2026-10-13
 
 ### Security

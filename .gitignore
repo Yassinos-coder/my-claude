@@ -25,3 +25,16 @@ remote-settings.json
 mcp-servers/
 
 settings.json
+
+# Secrets and machine-local data
+local/
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa*
+id_ed25519*
+.env
+.env.*
+history.jsonl
+.claude.json
